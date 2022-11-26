@@ -6,9 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BigButton from "../components/button";
 import { NavigationProp } from "@react-navigation/native";
 import SCREENS from "../constants/screens";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { displayError, displayMessage } from "../utils/common";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { displayMessage, displayError } from "../utils/common";
 
 const backgroundImage = require("../assets/back.jpeg");
 
@@ -16,22 +16,24 @@ export interface ILoginScreen {
   navigation: NavigationProp<any, any>;
 }
 
-const LoginScreen: React.FC<ILoginScreen> = ({ navigation }) => {
+const RegisterScreen: React.FC<ILoginScreen> = ({ navigation }) => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
+  const [confirmPassword, setConfirmPassword] = React.useState<string>("");
 
-  const onClickLogin = async () => {
+  const onClickLogin = () => {
+    navigation.navigate(SCREENS.LOGIN_SCREEN);
+  };
+
+  const onClickRegister = async () => {
     try {
-      if (!(email && password)) return;
-      await signInWithEmailAndPassword(auth, email, password);
+      if (!(email && password && confirmPassword)) return;
+      if (password !== confirmPassword) throw new Error("Passwords dont match");
+      await createUserWithEmailAndPassword(auth, email, password);
       displayMessage("Successfully registered!");
     } catch (error) {
       displayError(error);
     }
-  };
-
-  const onClickRegister = () => {
-    navigation.navigate(SCREENS.REGISTER_SCREEN);
   };
 
   return (
@@ -62,13 +64,21 @@ const LoginScreen: React.FC<ILoginScreen> = ({ navigation }) => {
           textContentType="password"
           secureTextEntry={true}
         />
-        <BigButton text="Login" onClick={onClickLogin} />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm password"
+          onChangeText={setConfirmPassword}
+          value={confirmPassword}
+          autoCapitalize="none"
+          autoCorrect={false}
+          textContentType="password"
+          secureTextEntry={true}
+        />
+        <BigButton text="Register" onClick={onClickRegister} />
         <View style={styles.subContainer}>
-          <Text style={styles.subContainerText}>
-            Don't have an account yet?
-          </Text>
-          <TouchableOpacity onPress={onClickRegister}>
-            <Text style={styles.subContainerButton}> Register</Text>
+          <Text style={styles.subContainerText}>Already have an account?</Text>
+          <TouchableOpacity onPress={onClickLogin}>
+            <Text style={styles.subContainerButton}> Login</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -76,4 +86,4 @@ const LoginScreen: React.FC<ILoginScreen> = ({ navigation }) => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

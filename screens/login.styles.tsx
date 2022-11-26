@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginHorizontal: 30,
+    paddingTop: 50,
   },
   title: {
     fontSize: 30,
