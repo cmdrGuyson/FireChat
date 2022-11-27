@@ -12,11 +12,11 @@ import { auth } from "../config/firebase";
 
 const backgroundImage = require("../assets/back.jpeg");
 
-export interface ILoginScreen {
+export interface IRegisterScreen {
   navigation: NavigationProp<any, any>;
 }
 
-const RegisterScreen: React.FC<ILoginScreen> = ({ navigation }) => {
+const RegisterScreen: React.FC<IRegisterScreen> = ({ navigation }) => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [confirmPassword, setConfirmPassword] = React.useState<string>("");
